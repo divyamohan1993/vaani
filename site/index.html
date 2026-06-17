@@ -3,163 +3,316 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Vaani — speak anywhere, type everywhere</title>
-<meta name="description" content="A tiny floating mic that types your voice into any Windows app — English or Hindi. Free, open-source, ~530 KB. Try the voice recognition right here." />
+<title>Vaani — voice typing for Windows, in English & हिन्दी</title>
+<meta name="description" content="A tiny floating microphone that types your voice into any Windows app — English or Hindi. Free, open-source, ~530 KB. Try the recognition right here, no install." />
+<meta name="theme-color" content="#0a0b0d" />
 <meta property="og:title" content="Vaani — speak anywhere, type everywhere" />
-<meta property="og:description" content="Speak, and your words type into any Windows app. English or हिन्दी. Free & open-source." />
+<meta property="og:description" content="Voice typing into any Windows app, in English or हिन्दी. Free & open-source. Windows' own dictation can't do Hindi — Vaani can." />
 <meta property="og:type" content="website" />
+<meta property="og:url" content="https://type.dmj.one" />
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ctext y='20' font-size='20'%3E%F0%9F%8E%99%EF%B8%8F%3C/text%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,600&family=Hanken+Grotesk:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600&display=swap" rel="stylesheet" />
 <style>
-  :root{--bg:#0b0e14;--card:rgba(22,28,40,.66);--txt:#eef2f8;--muted:#93a0b4;--line:rgba(255,255,255,.09);
-        --accent:#4f7cff;--accent2:#7a5cff;--live:#ff4d6d;--ok:#22c98a;--r:20px}
+  :root{
+    --ink:#0a0b0d; --ink2:#101216; --panel:#121419; --bone:#edeff3; --dim:#9aa2b1;
+    --line:rgba(255,255,255,.08); --line2:rgba(255,255,255,.14);
+    --accent:#5b8def; --accent-soft:rgba(91,141,239,.16); --saffron:#e3a548; --live:#ff5a6e; --ok:#3ad29f;
+    --display:"Fraunces",Georgia,"Times New Roman",serif;
+    --ui:"Hanken Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;
+    --deva:"Noto Sans Devanagari","Hanken Grotesk",system-ui,sans-serif;
+    --maxw:1080px;
+  }
   *{box-sizing:border-box;margin:0}
-  html{scroll-behavior:smooth}
-  body{font:16px/1.6 system-ui,"Segoe UI",Roboto,"Noto Sans",sans-serif;color:var(--txt);
-    background:radial-gradient(130% 90% at 50% -10%,#1a2335 0%,var(--bg) 55%,#070910 100%);
-    min-height:100vh;-webkit-font-smoothing:antialiased}
-  .wrap{max-width:920px;margin:0 auto;padding:clamp(28px,6vw,72px) 20px 60px}
-  .brand{display:flex;align-items:center;gap:9px;font-weight:700;letter-spacing:.2px;color:var(--muted)}
-  .brand b{color:var(--txt)}
-  h1{font-size:clamp(34px,7vw,60px);line-height:1.05;margin:26px 0 14px;letter-spacing:-.02em}
-  h1 .grad{background:linear-gradient(110deg,var(--accent),var(--accent2) 60%,#c08cff);-webkit-background-clip:text;background-clip:text;color:transparent}
-  .sub{font-size:clamp(17px,2.4vw,21px);color:var(--muted);max-width:620px}
-  .cta{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin:30px 0 8px}
-  .btn{display:inline-flex;align-items:center;gap:10px;padding:15px 26px;border-radius:14px;font-weight:700;
-    font-size:16px;text-decoration:none;border:1px solid var(--line);transition:transform .12s,box-shadow .2s}
-  .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;
-    box-shadow:0 12px 30px rgba(79,124,255,.4)}
-  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 16px 38px rgba(79,124,255,.5)}
-  .btn-ghost{background:rgba(255,255,255,.04);color:var(--txt)}
-  .btn-ghost:hover{background:rgba(255,255,255,.09)}
-  .hint{color:var(--muted);font-size:13.5px;margin-top:6px}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+  body{
+    font-family:var(--ui); color:var(--bone); background:var(--ink); line-height:1.6;
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; overflow-x:hidden;
+  }
+  .deva{font-family:var(--deva)}
+  /* atmosphere: layered radial glows + fine grain */
+  body::before{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;
+    background:
+      radial-gradient(60% 50% at 78% -8%, rgba(91,141,239,.18), transparent 70%),
+      radial-gradient(45% 40% at 12% 8%, rgba(227,165,72,.08), transparent 70%),
+      linear-gradient(180deg,#0c0e12 0%, var(--ink) 40%);
+  }
+  body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.035;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
 
-  /* Try-it demo */
-  .demo{margin:46px 0;background:var(--card);backdrop-filter:blur(20px) saturate(1.4);
-    -webkit-backdrop-filter:blur(20px) saturate(1.4);border:1px solid var(--line);border-radius:var(--r);
-    padding:clamp(20px,4vw,34px);box-shadow:0 24px 60px rgba(0,0,0,.5)}
-  .demo h2{font-size:15px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-weight:700}
-  .demo-row{display:flex;align-items:center;gap:18px;margin:18px 0;flex-wrap:wrap}
-  .mic{position:relative;width:84px;height:84px;border-radius:50%;border:1px solid rgba(255,255,255,.16);
-    cursor:pointer;display:grid;place-items:center;flex:none;color:#fff;
-    background:radial-gradient(120% 120% at 30% 20%,#2a3550,#151b29 70%),linear-gradient(135deg,var(--accent),var(--accent2));
-    box-shadow:0 10px 26px rgba(40,70,160,.4),inset 0 2px 6px rgba(255,255,255,.18)}
-  .mic:focus-visible{outline:3px solid var(--accent);outline-offset:4px}
-  .mic svg{width:34px;height:34px;fill:#fff;stroke:#fff;stroke-width:1.6;stroke-linecap:round}
+  /* nav */
+  nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(12px);
+    background:rgba(10,11,13,.6);border-bottom:1px solid var(--line)}
+  .nav-in{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .logo{display:flex;align-items:center;gap:9px;font-weight:700;letter-spacing:-.01em;font-size:18px}
+  .logo .mk{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;
+    background:linear-gradient(150deg,#243149,#0f1420);border:1px solid var(--line2);font-size:14px}
+  .nav-links{display:flex;align-items:center;gap:28px;font-size:14.5px}
+  .nav-links a{color:var(--dim);text-decoration:none;transition:color .15s}
+  .nav-links a:hover{color:var(--bone)}
+  .nav-cta{color:var(--bone)!important;border:1px solid var(--line2);padding:8px 16px;border-radius:9px}
+  .nav-cta:hover{background:rgba(255,255,255,.05)}
+  @media(max-width:620px){.nav-links a:not(.nav-cta){display:none}}
+
+  /* hero */
+  .hero{padding:84px 0 36px;text-align:center}
+  .eyebrow{display:inline-flex;align-items:center;gap:9px;font-size:13px;letter-spacing:.04em;
+    color:var(--dim);border:1px solid var(--line);border-radius:999px;padding:7px 15px;background:rgba(255,255,255,.02)}
+  .eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--ok);box-shadow:0 0 10px var(--ok)}
+  h1{font-family:var(--display);font-weight:500;font-size:clamp(44px,8.5vw,86px);line-height:1.0;
+    letter-spacing:-.025em;margin:26px 0 0}
+  h1 em{font-style:italic;color:var(--accent)}
+  .lede{font-size:clamp(17px,2.3vw,20.5px);color:var(--dim);max-width:600px;margin:22px auto 0;line-height:1.55}
+  .lede b{color:var(--bone);font-weight:600}
+  .actions{display:flex;gap:13px;justify-content:center;flex-wrap:wrap;margin-top:34px}
+  .btn{display:inline-flex;align-items:center;gap:9px;font-family:var(--ui);font-weight:600;font-size:15.5px;
+    text-decoration:none;padding:14px 24px;border-radius:12px;border:1px solid transparent;transition:transform .12s,box-shadow .25s,background .2s}
+  .btn-pri{background:var(--accent);color:#06080d;box-shadow:0 10px 34px rgba(91,141,239,.35)}
+  .btn-pri:hover{transform:translateY(-2px);box-shadow:0 16px 44px rgba(91,141,239,.46)}
+  .btn-sec{border-color:var(--line2);color:var(--bone)}
+  .btn-sec:hover{background:rgba(255,255,255,.05)}
+  .meta{margin-top:16px;font-size:13.5px;color:var(--dim);letter-spacing:.01em}
+  .meta b{color:var(--bone);font-weight:600}
+
+  /* staggered reveal */
+  .reveal{opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.2,.7,.2,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  /* demo */
+  .demo{margin:54px auto 0;max-width:760px;background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.015));
+    border:1px solid var(--line);border-radius:22px;padding:30px;position:relative;overflow:hidden;
+    box-shadow:0 30px 80px rgba(0,0,0,.45)}
+  .demo::before{content:"";position:absolute;inset:0;border-radius:22px;padding:1px;pointer-events:none;
+    background:linear-gradient(180deg,rgba(91,141,239,.4),transparent 40%);
+    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+  .demo-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px}
+  .demo-tag{font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);font-weight:600}
+  .lang{display:flex;gap:3px;background:rgba(0,0,0,.35);padding:4px;border-radius:11px;border:1px solid var(--line)}
+  .lang button{font-family:var(--ui);border:0;background:transparent;color:var(--dim);font-weight:600;font-size:13.5px;
+    padding:7px 15px;border-radius:8px;cursor:pointer;transition:.15s}
+  .lang button.on{background:var(--bone);color:#0a0b0d}
+  .lang button[data-lang="hi-IN"]{font-family:var(--deva)}
+  .stage{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+  .mic{position:relative;width:92px;height:92px;border-radius:50%;flex:none;cursor:pointer;display:grid;place-items:center;
+    color:#fff;border:1px solid var(--line2);
+    background:radial-gradient(130% 130% at 32% 22%,#33415e,#141925 72%);transition:transform .12s,box-shadow .3s}
+  .mic:hover{transform:translateY(-1px)}
+  .mic:focus-visible{outline:2px solid var(--accent);outline-offset:5px}
+  .mic svg{width:36px;height:36px;fill:#fff;stroke:#fff;stroke-width:1.5;stroke-linecap:round;z-index:1}
   .mic svg path:first-child{stroke:none}
-  .ring{position:absolute;inset:-6px;border-radius:50%;border:2px solid var(--live);opacity:0}
-  body[data-on="1"] .mic{background:radial-gradient(120% 120% at 30% 20%,#5a2233,#2a0e16 70%),linear-gradient(135deg,#ff4d6d,#ff7a3d)}
-  body[data-on="1"] .ring{animation:p 1.6s ease-out infinite}
-  @keyframes p{0%{opacity:.7;transform:scale(.82)}100%{opacity:0;transform:scale(1.5)}}
-  .lang{display:flex;gap:4px;background:rgba(0,0,0,.3);padding:4px;border-radius:999px;border:1px solid var(--line)}
-  .lang button{border:0;background:transparent;color:var(--muted);font-weight:700;padding:7px 14px;border-radius:999px;cursor:pointer}
-  .lang button.on{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff}
-  .demo-cap{color:var(--muted);font-size:14px}
-  .box{width:100%;min-height:108px;background:rgba(0,0,0,.32);border:1px solid var(--line);border-radius:14px;
-    padding:14px 16px;font-size:17px;color:var(--txt);white-space:pre-wrap}
-  .box .it{color:var(--muted);font-style:italic}
-  .box:empty::before{content:"Your words appear here…";color:var(--muted)}
-  .demo-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:12px;flex-wrap:wrap}
-  .copy{background:rgba(255,255,255,.06);border:1px solid var(--line);color:var(--txt);border-radius:10px;padding:8px 14px;cursor:pointer;font-weight:600}
-  .copy:hover{background:rgba(255,255,255,.11)}
-  .nochrome{color:#f4b740;font-size:13.5px}
+  .mic .glow{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle,var(--accent-soft),transparent 70%);opacity:.7}
+  .ring{position:absolute;inset:-7px;border-radius:50%;border:1.5px solid var(--live);opacity:0}
+  body[data-on="1"] .mic{background:radial-gradient(130% 130% at 32% 22%,#5a2533,#220c12 72%);box-shadow:0 0 0 0 var(--live)}
+  body[data-on="1"] .mic .glow{background:radial-gradient(circle,rgba(255,90,110,.22),transparent 70%)}
+  body[data-on="1"] .ring{animation:pulse 1.7s ease-out infinite}
+  body[data-on="1"] .ring.b{animation-delay:.85s}
+  @keyframes pulse{0%{opacity:.65;transform:scale(.82)}100%{opacity:0;transform:scale(1.55)}}
+  .stage-txt{flex:1;min-width:200px}
+  .stage-txt .cap{color:var(--dim);font-size:14.5px}
+  .stage-txt .cap b{color:var(--bone)}
+  .box{margin-top:18px;width:100%;min-height:108px;background:rgba(0,0,0,.32);border:1px solid var(--line);border-radius:14px;
+    padding:16px 18px;font-size:17px;line-height:1.65;white-space:pre-wrap;color:var(--bone)}
+  .box.deva{font-family:var(--deva)}
+  .box .it{color:var(--dim)}
+  .box:empty::before{content:"Your words appear here as you speak…";color:var(--dim)}
+  .demo-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;flex-wrap:wrap}
+  .note{font-size:13px;color:var(--saffron)}
+  .copy{font-family:var(--ui);background:rgba(255,255,255,.05);border:1px solid var(--line2);color:var(--bone);
+    border-radius:10px;padding:9px 16px;font-weight:600;font-size:13.5px;cursor:pointer;transition:.15s}
+  .copy:hover{background:rgba(255,255,255,.1)}
 
-  .feats{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin:40px 0}
-  .feat{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:16px;padding:20px}
-  .feat .ic{font-size:24px}.feat h3{font-size:16px;margin:8px 0 4px}.feat p{color:var(--muted);font-size:14px}
-  .how{color:var(--muted);font-size:15px;margin:30px 0;text-align:center}
-  .how code{background:rgba(255,255,255,.06);padding:2px 8px;border-radius:6px;color:var(--txt);font-size:13px}
-  footer{border-top:1px solid var(--line);margin-top:48px;padding-top:22px;color:var(--muted);font-size:14px;
-    display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
-  footer a{color:var(--accent);text-decoration:none}
-  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+  /* section scaffold */
+  section.blk{padding:84px 0}
+  .kicker{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:600}
+  h2{font-family:var(--display);font-weight:500;font-size:clamp(28px,4.4vw,42px);letter-spacing:-.02em;line-height:1.1;margin:14px 0 0}
+  .blk .sub{color:var(--dim);font-size:17px;max-width:560px;margin:16px 0 0}
+
+  /* the gap (USP) */
+  .gap{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:40px}
+  .gcard{border:1px solid var(--line);border-radius:18px;padding:26px;background:rgba(255,255,255,.02)}
+  .gcard.win{opacity:.72}
+  .gcard h3{font-size:17px;font-weight:600;display:flex;align-items:center;gap:10px}
+  .gcard .x{color:var(--live)} .gcard .y{color:var(--ok)}
+  .gcard p{color:var(--dim);font-size:14.5px;margin-top:10px}
+  .gcard.vaani{border-color:rgba(91,141,239,.4);background:linear-gradient(180deg,rgba(91,141,239,.08),transparent)}
+  @media(max-width:680px){.gap{grid-template-columns:1fr}}
+
+  /* features */
+  .feats{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:44px}
+  .feat{border:1px solid var(--line);border-radius:18px;padding:26px;background:rgba(255,255,255,.02);transition:border-color .2s,transform .2s}
+  .feat:hover{border-color:var(--line2);transform:translateY(-3px)}
+  .feat .ic{width:42px;height:42px;border-radius:11px;display:grid;place-items:center;font-size:20px;
+    background:var(--accent-soft);border:1px solid var(--line2);margin-bottom:16px}
+  .feat h3{font-size:17px;font-weight:600}
+  .feat p{color:var(--dim);font-size:14.5px;margin-top:8px}
+  @media(max-width:760px){.feats{grid-template-columns:1fr}}
+
+  /* how */
+  .flow{display:flex;align-items:stretch;gap:14px;margin-top:40px;flex-wrap:wrap}
+  .step{flex:1;min-width:180px;border:1px solid var(--line);border-radius:16px;padding:22px;background:rgba(255,255,255,.02);position:relative}
+  .step .n{font-family:var(--display);font-size:15px;color:var(--accent);font-weight:600}
+  .step h4{font-size:16px;font-weight:600;margin:8px 0 6px}
+  .step p{color:var(--dim);font-size:14px}
+  .step .arrow{position:absolute;right:-12px;top:50%;transform:translateY(-50%);color:var(--line2);font-size:18px}
+  @media(max-width:760px){.step .arrow{display:none}}
+
+  /* final cta */
+  .final{text-align:center;border:1px solid var(--line);border-radius:24px;padding:56px 28px;margin:30px 0;
+    background:radial-gradient(80% 130% at 50% 0%,rgba(91,141,239,.12),transparent 70%)}
+  .final h2{margin-bottom:8px}
+
+  footer{border-top:1px solid var(--line);padding:36px 0;color:var(--dim);font-size:14px}
+  .foot-in{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
+  footer a{color:var(--bone);text-decoration:none;border-bottom:1px solid transparent}
+  footer a:hover{border-color:var(--line2)}
+  .saff{color:var(--saffron)}
+
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
 </style>
 </head>
 <body data-on="0">
-<div class="wrap">
-  <div class="brand">🎙️ <b>Vaani</b></div>
 
-  <h1>Speak anywhere.<br><span class="grad">Type everywhere.</span></h1>
-  <p class="sub">A tiny floating microphone that types your voice into <b>any Windows app</b> — VS&nbsp;Code, Notepad, WhatsApp, your browser. English or <b>हिन्दी</b>. Free and open-source.</p>
-
-  <div class="cta">
-    <a class="btn btn-primary" id="dl" href="https://github.com/divyamohan1993/vaani/releases/latest">⬇️ Download for Windows</a>
-    <a class="btn btn-ghost" href="https://github.com/divyamohan1993/vaani">★ View on GitHub</a>
+<nav>
+  <div class="wrap nav-in">
+    <span class="logo"><span class="mk">🎙️</span> Vaani</span>
+    <span class="nav-links">
+      <a href="#gap">Why Vaani</a>
+      <a href="#how">How it works</a>
+      <a href="https://github.com/divyamohan1993/vaani">GitHub</a>
+      <a class="nav-cta" href="https://github.com/divyamohan1993/vaani/releases/latest">Download</a>
+    </span>
   </div>
-  <p class="hint">Windows 10 &amp; 11 · ~530&nbsp;KB · double-click to install (sets up Chrome automatically)</p>
+</nav>
 
-  <!-- Live, in-browser demo: try the recognition before downloading -->
-  <section class="demo">
-    <h2>Try the voice recognition — right here</h2>
-    <div class="demo-row">
-      <button id="mic" class="mic" aria-pressed="false" aria-label="Start / stop listening">
-        <span class="ring" aria-hidden="true"></span>
+<header class="hero wrap">
+  <span class="eyebrow reveal"><span class="dot"></span> Voice typing for Windows · English &amp; <span class="deva">हिन्दी</span></span>
+  <h1 class="reveal" style="animation-delay:.06s">Speak anywhere.<br><em>Type everywhere.</em></h1>
+  <p class="lede reveal" style="animation-delay:.13s">A tiny floating microphone that types your voice straight into <b>any Windows app</b> — your editor, your docs, your browser. Like a keyboard, only faster.</p>
+  <div class="actions reveal" style="animation-delay:.2s">
+    <a class="btn btn-pri" href="https://github.com/divyamohan1993/vaani/releases/latest">↓ Download for Windows</a>
+    <a class="btn btn-sec" href="https://github.com/divyamohan1993/vaani">View source</a>
+  </div>
+  <p class="meta reveal" style="animation-delay:.26s">Windows 10 &amp; 11 · <b>~530 KB</b> · double-click installs everything · free &amp; open-source</p>
+
+  <!-- live demo: the proof -->
+  <section class="demo reveal" id="demo" style="animation-delay:.34s" aria-label="Live voice demo">
+    <div class="demo-head">
+      <span class="demo-tag">Try it now — no install</span>
+      <div class="lang" role="radiogroup" aria-label="Language">
+        <button class="on" data-lang="en-IN">English</button>
+        <button data-lang="hi-IN">हिन्दी</button>
+      </div>
+    </div>
+    <div class="stage">
+      <button id="mic" class="mic" aria-pressed="false" aria-label="Start or stop listening">
+        <span class="glow" aria-hidden="true"></span><span class="ring" aria-hidden="true"></span><span class="ring b" aria-hidden="true"></span>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3Z"/><path d="M18 11a6 6 0 0 1-12 0M12 17v4M8 21h8"/></svg>
       </button>
-      <div>
-        <div class="lang" role="radiogroup" aria-label="Language">
-          <button class="on" data-lang="en-IN">English</button>
-          <button data-lang="hi-IN">हिन्दी</button>
-        </div>
-        <p class="demo-cap" id="cap" style="margin-top:8px">Click the mic and talk. This runs entirely in your browser.</p>
+      <div class="stage-txt">
+        <p class="cap" id="cap"><b>Click the mic and talk.</b> Runs entirely in your browser — nothing is sent anywhere but Chrome's speech engine.</p>
       </div>
     </div>
     <div class="box" id="box" role="log" aria-live="polite"></div>
     <div class="demo-foot">
-      <span class="nochrome" id="nochrome" hidden>⚠ Recognition needs Google Chrome. The full app uses Chrome under the hood.</span>
+      <span class="note" id="note" hidden>Open in Google Chrome to try the demo — the app uses Chrome under the hood.</span>
       <span></span>
       <button class="copy" id="copy">Copy text</button>
     </div>
   </section>
+</header>
 
-  <div class="feats">
-    <div class="feat"><div class="ic">⌨️</div><h3>Into any app</h3><p>Types where your cursor is — like a keyboard. Not a box you copy from.</p></div>
-    <div class="feat"><div class="ic">🇮🇳</div><h3>English &amp; Hindi</h3><p>Accurate Indian-English and Devanagari, powered by Chrome's speech engine.</p></div>
-    <div class="feat"><div class="ic">🪶</div><h3>Tiny &amp; private</h3><p>~530&nbsp;KB native helper. Runs on loopback. Logs nothing you say.</p></div>
+<!-- the gap / USP -->
+<section class="blk wrap" id="gap">
+  <span class="kicker">The difference</span>
+  <h2>Windows can't dictate Hindi.<br>Vaani can.</h2>
+  <p class="sub">Windows' built-in voice typing (Win+H) still doesn't support Hindi. The tools that do are paid or browser-only. Vaani is the free, open one that types <span class="deva">हिन्दी</span> and English into <em>every</em> app.</p>
+  <div class="gap">
+    <div class="gcard win">
+      <h3><span class="x">✕</span> Windows Win+H</h3>
+      <p>No Hindi dictation. A transient bar, English-first. Fine for US English, frustrating otherwise.</p>
+    </div>
+    <div class="gcard vaani">
+      <h3><span class="y">✓</span> Vaani</h3>
+      <p>English <em>and</em> <span class="deva">हिन्दी</span>, into any app. An always-there mic. Free, open-source, ~530 KB. Powered by Chrome's speech engine.</p>
+    </div>
   </div>
+</section>
 
-  <p class="how">Press <code>Ctrl + Alt + Space</code> anywhere, speak, and it types. A borderless mic floats on top; drag it, fade it, right-click for language.</p>
+<!-- features -->
+<section class="blk wrap">
+  <span class="kicker">Crafted to disappear</span>
+  <h2>Built to stay out of your way</h2>
+  <div class="feats">
+    <div class="feat"><div class="ic">⌨️</div><h3>Types where your cursor is</h3><p>Into your real editor, like a keyboard — not a box you copy from. Full Unicode, Devanagari included.</p></div>
+    <div class="feat"><div class="ic">🫧</div><h3>Just a mic</h3><p>A borderless dot that floats on top, turns red while listening, drags anywhere, and fades to any opacity.</p></div>
+    <div class="feat"><div class="ic">🔒</div><h3>Quiet &amp; private</h3><p>A ~530 KB native helper on loopback only. No telemetry. Logs nothing you say. No Electron.</p></div>
+  </div>
+</section>
 
-  <footer>
-    <span>Free &amp; open-source · <a href="https://github.com/divyamohan1993/vaani/blob/main/LICENSE">MIT</a></span>
-    <span>Built in India 🇮🇳 · <a href="https://github.com/divyamohan1993">divyamohan1993</a></span>
-  </footer>
-</div>
+<!-- how -->
+<section class="blk wrap" id="how">
+  <span class="kicker">How it works</span>
+  <h2>One key. Your words. Anywhere.</h2>
+  <div class="flow">
+    <div class="step"><div class="n">01</div><h4>Press Ctrl+Alt+Space</h4><p>Or click the floating mic. It turns red — listening.</p><span class="arrow">→</span></div>
+    <div class="step"><div class="n">02</div><h4>Speak naturally</h4><p>English or Hindi. Chrome's engine transcribes, hidden in the background.</p><span class="arrow">→</span></div>
+    <div class="step"><div class="n">03</div><h4>It types itself</h4><p>Each phrase lands at your cursor — in whatever window has focus.</p></div>
+  </div>
+</section>
+
+<!-- final cta -->
+<section class="wrap">
+  <div class="final">
+    <span class="kicker">Free forever</span>
+    <h2>Give your hands a rest.</h2>
+    <p class="sub" style="margin:8px auto 0">Download once. Double-click. It sets up everything — even Chrome — and a mic appears.</p>
+    <div class="actions" style="margin-top:26px">
+      <a class="btn btn-pri" href="https://github.com/divyamohan1993/vaani/releases/latest">↓ Download for Windows</a>
+      <a class="btn btn-sec" href="https://github.com/divyamohan1993/vaani">★ Star on GitHub</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-in">
+    <span class="logo" style="font-size:16px"><span class="mk" style="width:22px;height:22px;font-size:12px">🎙️</span> Vaani</span>
+    <span>Free &amp; open-source · <a href="https://github.com/divyamohan1993/vaani/blob/main/LICENSE">MIT</a> · Built in India <span class="saff">🇮🇳</span> by <a href="https://github.com/divyamohan1993">Divya Mohan</a></span>
+  </div>
+</footer>
 
 <script>
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   const box = document.getElementById('box'), mic = document.getElementById('mic'), cap = document.getElementById('cap');
-  let rec = null, on = false, want = false, lang = 'en-IN', finalTxt = '';
+  let rec = null, want = false, lang = 'en-IN', finalTxt = '';
 
-  if (!SR) { document.getElementById('nochrome').hidden = false; }
+  function setDeva(on){ box.classList.toggle('deva', on); }
+  if (!SR) { document.getElementById('note').hidden = false; }
   else {
     rec = new SR(); rec.continuous = true; rec.interimResults = true; rec.lang = lang;
-    rec.onstart = () => { on = true; document.body.dataset.on = '1'; mic.setAttribute('aria-pressed','true'); cap.textContent = 'Listening… speak now.'; };
-    rec.onend = () => { on = false; document.body.dataset.on = '0'; mic.setAttribute('aria-pressed','false'); if (want) { try { rec.start(); } catch {} } else cap.textContent = 'Click the mic and talk.'; };
-    rec.onerror = (e) => { if (e.error === 'not-allowed') cap.textContent = 'Allow the microphone to try the demo.'; };
+    rec.onstart = () => { document.body.dataset.on = '1'; mic.setAttribute('aria-pressed','true'); cap.innerHTML = '<b>Listening…</b> speak now.'; };
+    rec.onend = () => { document.body.dataset.on = '0'; mic.setAttribute('aria-pressed','false'); if (want) { try { rec.start(); } catch {} } else cap.innerHTML = '<b>Click the mic and talk.</b> Runs entirely in your browser.'; };
+    rec.onerror = (e) => { if (e.error === 'not-allowed') cap.innerHTML = '<b>Allow the microphone</b> to try the demo.'; };
     rec.onresult = (e) => {
       let it = '';
       for (let i = e.resultIndex; i < e.results.length; i++) {
         const r = e.results[i];
-        if (r.isFinal) finalTxt += r[0].transcript.trim() + ' ';
-        else it += r[0].transcript;
+        if (r.isFinal) finalTxt += r[0].transcript.trim() + ' '; else it += r[0].transcript;
       }
-      box.innerHTML = '';
-      box.append(document.createTextNode(finalTxt));
-      if (it) { const s = document.createElement('span'); s.className = 'it'; s.textContent = it; box.append(s); }
+      box.textContent = finalTxt;
+      if (it) { const s = document.createElement('span'); s.className = 'it'; s.textContent = it; box.appendChild(s); }
     };
   }
-  mic.addEventListener('click', () => {
-    if (!rec) return;
-    if (want) { want = false; try { rec.stop(); } catch {} }
-    else { want = true; try { rec.start(); } catch {} }
-  });
+  mic.addEventListener('click', () => { if (!rec) { document.getElementById('note').hidden = false; return; }
+    if (want) { want = false; try { rec.stop(); } catch {} } else { want = true; try { rec.start(); } catch {} } });
   document.querySelectorAll('.lang button').forEach(b => b.addEventListener('click', () => {
     document.querySelectorAll('.lang button').forEach(x => x.classList.remove('on'));
-    b.classList.add('on'); lang = b.dataset.lang;
+    b.classList.add('on'); lang = b.dataset.lang; setDeva(lang === 'hi-IN');
     if (rec) { rec.lang = lang; if (want) { try { rec.stop(); } catch {} } }
   }));
   document.getElementById('copy').addEventListener('click', async () => {
-    try { await navigator.clipboard.writeText(finalTxt.trim()); const c = document.getElementById('copy'); c.textContent = 'Copied ✓'; setTimeout(() => c.textContent = 'Copy text', 1500); } catch {}
+    try { await navigator.clipboard.writeText(finalTxt.trim()); const c = document.getElementById('copy'); const t = c.textContent; c.textContent = 'Copied ✓'; setTimeout(() => c.textContent = t, 1500); } catch {}
   });
 </script>
 </body>

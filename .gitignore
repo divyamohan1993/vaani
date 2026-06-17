@@ -23,3 +23,6 @@ Thumbs.db
 
 # Vercel local link
 .vercel
+
+# Playwright MCP output
+.playwright-mcp/
