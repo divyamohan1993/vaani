@@ -1,0 +1,59 @@
+:root{
+  --bg:#11151c; --txt:#eef2f8; --muted:#8b96a8; --line:rgba(255,255,255,.10);
+  --accent:#4f7cff; --accent2:#7a5cff; --live:#ff4d6d; --ok:#22c98a;
+}
+*{box-sizing:border-box; margin:0}
+[hidden]{display:none !important}
+html,body{height:100%; width:100%; overflow:hidden}
+body{
+  font:13px/1.3 system-ui,"Segoe UI","Noto Sans",sans-serif; color:var(--txt);
+  user-select:none; -webkit-user-select:none; background:transparent;
+}
+
+/* The pill fills the frameless window and is the drag handle. */
+.pill{
+  height:100vh; width:100vw; display:flex; align-items:center; gap:8px;
+  padding:0 12px 0 8px; -webkit-app-region:drag; cursor:move;
+  background:linear-gradient(180deg,#1b2230,#0e131b);
+  border:1px solid var(--line); border-radius:14px;
+  box-shadow:0 8px 22px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.06);
+}
+.pill > *{-webkit-app-region:no-drag}
+
+/* Mic */
+.mic{
+  position:relative; flex:none; width:40px; height:40px; border-radius:50%;
+  border:1px solid rgba(255,255,255,.16); cursor:pointer; display:grid; place-items:center;
+  background:radial-gradient(120% 120% at 30% 20%,#2a3550,#151b29 70%),
+    linear-gradient(135deg,var(--accent),var(--accent2));
+  box-shadow:0 4px 12px rgba(40,70,160,.4), inset 0 1px 3px rgba(255,255,255,.2);
+  transition:transform .1s;
+}
+.mic:active{transform:scale(.94)}
+.mic:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+.mic svg{width:20px; height:20px; fill:#fff; stroke:#fff; stroke-width:1.7; stroke-linecap:round}
+.mic svg path:first-child{stroke:none}
+.ring{position:absolute; inset:-4px; border-radius:50%; border:2px solid var(--live); opacity:0}
+body[data-listening="true"] .mic{
+  background:radial-gradient(120% 120% at 30% 20%,#5a2233,#2a0e16 70%),linear-gradient(135deg,#ff4d6d,#ff7a3d);
+}
+body[data-listening="true"] .ring{animation:pulse 1.6s ease-out infinite}
+@keyframes pulse{0%{opacity:.7;transform:scale(.8)}100%{opacity:0;transform:scale(1.5)}}
+
+/* Language toggle */
+.lang{display:flex; gap:3px; background:rgba(0,0,0,.3); padding:3px; border-radius:999px; border:1px solid var(--line)}
+.lang-pill{border:0; background:transparent; color:var(--muted); font-weight:700; font-size:12px;
+  padding:4px 9px; border-radius:999px; cursor:pointer; transition:.15s}
+.lang-pill.is-active{background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff}
+
+/* Status dot (helper connection) */
+.dot{flex:none; margin-left:auto; width:9px; height:9px; border-radius:50%; background:var(--muted); transition:.25s}
+.dot.ok{background:var(--ok); box-shadow:0 0 8px var(--ok)}
+.dot.warn{background:#f4b740; box-shadow:0 0 8px #f4b740}
+
+/* Chrome-required overlay (fills the tiny window) */
+.overlay{position:fixed; inset:0; background:#0e131b; display:grid; place-items:center; padding:8px; text-align:center; border-radius:14px}
+.card{font-size:11px; color:var(--muted)} .card b{display:block; color:var(--txt); margin-bottom:3px; font-size:12px}
+.card span{font-size:9px; word-break:break-all}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important; transition:none!important}}

@@ -1,0 +1,42 @@
+name: 🐛 Bug report
+description: Something didn't work as expected
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What did you expect, and what happened instead?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Click the mic / press Ctrl+Alt+Space
+        2. Speak "..."
+        3. ...
+  - type: input
+    id: windows
+    attributes:
+      label: Windows version
+      placeholder: "Windows 11 23H2 / Windows 10 22H2"
+    validations:
+      required: true
+  - type: input
+    id: chrome
+    attributes:
+      label: Google Chrome version
+      placeholder: "chrome://version"
+  - type: dropdown
+    id: language
+    attributes:
+      label: Language you were speaking
+      options: [English, हिन्दी, Other]
+  - type: textarea
+    id: log
+    attributes:
+      label: Log (optional)
+      description: Run with VAANI_DEBUG=1 and paste %LOCALAPPDATA%\Vaani\vaani.log
+      render: text

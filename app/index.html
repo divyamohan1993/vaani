@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <meta name="color-scheme" content="dark" />
+  <title>Vaani</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ctext y='20' font-size='20'%3E%F0%9F%8E%99%EF%B8%8F%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body data-listening="false">
+  <!-- Compact always-on-top pill. The whole bar is a drag region; controls opt out. -->
+  <div class="pill" id="pill">
+    <button id="mic" class="mic" aria-pressed="false" aria-label="Start listening (Ctrl+Alt+Space)" title="Click or press Ctrl+Alt+Space">
+      <span class="ring" aria-hidden="true"></span>
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3Z"/>
+        <path d="M18 11a6 6 0 0 1-12 0M12 17v4M8 21h8"/>
+      </svg>
+    </button>
+
+    <div class="lang" role="radiogroup" aria-label="Language">
+      <button class="lang-pill is-active" data-lang="en-IN" role="radio" aria-checked="true">EN</button>
+      <button class="lang-pill" data-lang="hi-IN" role="radio" aria-checked="false">हिं</button>
+    </div>
+
+    <span class="dot" id="dot" title="Checking helper…" aria-label="status"></span>
+  </div>
+
+  <!-- Shown only outside Chrome (Edge/Firefox/Safari can't run the speech engine). -->
+  <div class="overlay" id="needchrome" hidden>
+    <div class="card">
+      <b>Open in Google Chrome</b>
+      <span id="thisurl"></span>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

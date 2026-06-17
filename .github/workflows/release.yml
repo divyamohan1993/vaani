@@ -1,0 +1,29 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Build release
+        run: cargo build --manifest-path helper/Cargo.toml --release
+      - name: Package vaani-windows.zip
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force dist | Out-Null
+          Copy-Item helper/target/release/vaani.exe dist/
+          Copy-Item autoconfig.bat, autoconfig.ps1, build.ps1, README.md, LICENSE dist/
+          Compress-Archive -Path dist/* -DestinationPath vaani-windows.zip -Force
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: vaani-windows.zip
+          generate_release_notes: true

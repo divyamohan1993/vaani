@@ -1,0 +1,22 @@
+# Rust build artifacts
+/helper/target/
+target/
+
+# Built binary — distribute via GitHub Releases, not git
+/vaani.exe
+*.exe
+
+# Local runtime state, logs, Chrome profile
+*.log
+chrome-profile/
+pos.txt
+alpha.txt
+
+# Test / capture outputs (root only; docs/ images are committed)
+/*.png
+/*.wav
+/*-result.txt
+
+# OS cruft
+Thumbs.db
+.DS_Store
