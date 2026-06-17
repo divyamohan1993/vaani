@@ -1,0 +1,13 @@
+# Only the marketing landing page (site/) is deployed to Vercel.
+/helper
+/app
+/tests
+/.github
+/docs
+*.ps1
+*.bat
+idea.md
+CHANGELOG.md
+CONTRIBUTING.md
+SECURITY.md
+CODE_OF_CONDUCT.md

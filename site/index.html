@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Vaani — speak anywhere, type everywhere</title>
+<meta name="description" content="A tiny floating mic that types your voice into any Windows app — English or Hindi. Free, open-source, ~530 KB. Try the voice recognition right here." />
+<meta property="og:title" content="Vaani — speak anywhere, type everywhere" />
+<meta property="og:description" content="Speak, and your words type into any Windows app. English or हिन्दी. Free & open-source." />
+<meta property="og:type" content="website" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ctext y='20' font-size='20'%3E%F0%9F%8E%99%EF%B8%8F%3C/text%3E%3C/svg%3E" />
+<style>
+  :root{--bg:#0b0e14;--card:rgba(22,28,40,.66);--txt:#eef2f8;--muted:#93a0b4;--line:rgba(255,255,255,.09);
+        --accent:#4f7cff;--accent2:#7a5cff;--live:#ff4d6d;--ok:#22c98a;--r:20px}
+  *{box-sizing:border-box;margin:0}
+  html{scroll-behavior:smooth}
+  body{font:16px/1.6 system-ui,"Segoe UI",Roboto,"Noto Sans",sans-serif;color:var(--txt);
+    background:radial-gradient(130% 90% at 50% -10%,#1a2335 0%,var(--bg) 55%,#070910 100%);
+    min-height:100vh;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:920px;margin:0 auto;padding:clamp(28px,6vw,72px) 20px 60px}
+  .brand{display:flex;align-items:center;gap:9px;font-weight:700;letter-spacing:.2px;color:var(--muted)}
+  .brand b{color:var(--txt)}
+  h1{font-size:clamp(34px,7vw,60px);line-height:1.05;margin:26px 0 14px;letter-spacing:-.02em}
+  h1 .grad{background:linear-gradient(110deg,var(--accent),var(--accent2) 60%,#c08cff);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{font-size:clamp(17px,2.4vw,21px);color:var(--muted);max-width:620px}
+  .cta{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin:30px 0 8px}
+  .btn{display:inline-flex;align-items:center;gap:10px;padding:15px 26px;border-radius:14px;font-weight:700;
+    font-size:16px;text-decoration:none;border:1px solid var(--line);transition:transform .12s,box-shadow .2s}
+  .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;
+    box-shadow:0 12px 30px rgba(79,124,255,.4)}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 16px 38px rgba(79,124,255,.5)}
+  .btn-ghost{background:rgba(255,255,255,.04);color:var(--txt)}
+  .btn-ghost:hover{background:rgba(255,255,255,.09)}
+  .hint{color:var(--muted);font-size:13.5px;margin-top:6px}
+
+  /* Try-it demo */
+  .demo{margin:46px 0;background:var(--card);backdrop-filter:blur(20px) saturate(1.4);
+    -webkit-backdrop-filter:blur(20px) saturate(1.4);border:1px solid var(--line);border-radius:var(--r);
+    padding:clamp(20px,4vw,34px);box-shadow:0 24px 60px rgba(0,0,0,.5)}
+  .demo h2{font-size:15px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-weight:700}
+  .demo-row{display:flex;align-items:center;gap:18px;margin:18px 0;flex-wrap:wrap}
+  .mic{position:relative;width:84px;height:84px;border-radius:50%;border:1px solid rgba(255,255,255,.16);
+    cursor:pointer;display:grid;place-items:center;flex:none;color:#fff;
+    background:radial-gradient(120% 120% at 30% 20%,#2a3550,#151b29 70%),linear-gradient(135deg,var(--accent),var(--accent2));
+    box-shadow:0 10px 26px rgba(40,70,160,.4),inset 0 2px 6px rgba(255,255,255,.18)}
+  .mic:focus-visible{outline:3px solid var(--accent);outline-offset:4px}
+  .mic svg{width:34px;height:34px;fill:#fff;stroke:#fff;stroke-width:1.6;stroke-linecap:round}
+  .mic svg path:first-child{stroke:none}
+  .ring{position:absolute;inset:-6px;border-radius:50%;border:2px solid var(--live);opacity:0}
+  body[data-on="1"] .mic{background:radial-gradient(120% 120% at 30% 20%,#5a2233,#2a0e16 70%),linear-gradient(135deg,#ff4d6d,#ff7a3d)}
+  body[data-on="1"] .ring{animation:p 1.6s ease-out infinite}
+  @keyframes p{0%{opacity:.7;transform:scale(.82)}100%{opacity:0;transform:scale(1.5)}}
+  .lang{display:flex;gap:4px;background:rgba(0,0,0,.3);padding:4px;border-radius:999px;border:1px solid var(--line)}
+  .lang button{border:0;background:transparent;color:var(--muted);font-weight:700;padding:7px 14px;border-radius:999px;cursor:pointer}
+  .lang button.on{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff}
+  .demo-cap{color:var(--muted);font-size:14px}
+  .box{width:100%;min-height:108px;background:rgba(0,0,0,.32);border:1px solid var(--line);border-radius:14px;
+    padding:14px 16px;font-size:17px;color:var(--txt);white-space:pre-wrap}
+  .box .it{color:var(--muted);font-style:italic}
+  .box:empty::before{content:"Your words appear here…";color:var(--muted)}
+  .demo-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:12px;flex-wrap:wrap}
+  .copy{background:rgba(255,255,255,.06);border:1px solid var(--line);color:var(--txt);border-radius:10px;padding:8px 14px;cursor:pointer;font-weight:600}
+  .copy:hover{background:rgba(255,255,255,.11)}
+  .nochrome{color:#f4b740;font-size:13.5px}
+
+  .feats{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin:40px 0}
+  .feat{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:16px;padding:20px}
+  .feat .ic{font-size:24px}.feat h3{font-size:16px;margin:8px 0 4px}.feat p{color:var(--muted);font-size:14px}
+  .how{color:var(--muted);font-size:15px;margin:30px 0;text-align:center}
+  .how code{background:rgba(255,255,255,.06);padding:2px 8px;border-radius:6px;color:var(--txt);font-size:13px}
+  footer{border-top:1px solid var(--line);margin-top:48px;padding-top:22px;color:var(--muted);font-size:14px;
+    display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  footer a{color:var(--accent);text-decoration:none}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body data-on="0">
+<div class="wrap">
+  <div class="brand">🎙️ <b>Vaani</b></div>
+
+  <h1>Speak anywhere.<br><span class="grad">Type everywhere.</span></h1>
+  <p class="sub">A tiny floating microphone that types your voice into <b>any Windows app</b> — VS&nbsp;Code, Notepad, WhatsApp, your browser. English or <b>हिन्दी</b>. Free and open-source.</p>
+
+  <div class="cta">
+    <a class="btn btn-primary" id="dl" href="https://github.com/divyamohan1993/vaani/releases/latest">⬇️ Download for Windows</a>
+    <a class="btn btn-ghost" href="https://github.com/divyamohan1993/vaani">★ View on GitHub</a>
+  </div>
+  <p class="hint">Windows 10 &amp; 11 · ~530&nbsp;KB · double-click to install (sets up Chrome automatically)</p>
+
+  <!-- Live, in-browser demo: try the recognition before downloading -->
+  <section class="demo">
+    <h2>Try the voice recognition — right here</h2>
+    <div class="demo-row">
+      <button id="mic" class="mic" aria-pressed="false" aria-label="Start / stop listening">
+        <span class="ring" aria-hidden="true"></span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3Z"/><path d="M18 11a6 6 0 0 1-12 0M12 17v4M8 21h8"/></svg>
+      </button>
+      <div>
+        <div class="lang" role="radiogroup" aria-label="Language">
+          <button class="on" data-lang="en-IN">English</button>
+          <button data-lang="hi-IN">हिन्दी</button>
+        </div>
+        <p class="demo-cap" id="cap" style="margin-top:8px">Click the mic and talk. This runs entirely in your browser.</p>
+      </div>
+    </div>
+    <div class="box" id="box" role="log" aria-live="polite"></div>
+    <div class="demo-foot">
+      <span class="nochrome" id="nochrome" hidden>⚠ Recognition needs Google Chrome. The full app uses Chrome under the hood.</span>
+      <span></span>
+      <button class="copy" id="copy">Copy text</button>
+    </div>
+  </section>
+
+  <div class="feats">
+    <div class="feat"><div class="ic">⌨️</div><h3>Into any app</h3><p>Types where your cursor is — like a keyboard. Not a box you copy from.</p></div>
+    <div class="feat"><div class="ic">🇮🇳</div><h3>English &amp; Hindi</h3><p>Accurate Indian-English and Devanagari, powered by Chrome's speech engine.</p></div>
+    <div class="feat"><div class="ic">🪶</div><h3>Tiny &amp; private</h3><p>~530&nbsp;KB native helper. Runs on loopback. Logs nothing you say.</p></div>
+  </div>
+
+  <p class="how">Press <code>Ctrl + Alt + Space</code> anywhere, speak, and it types. A borderless mic floats on top; drag it, fade it, right-click for language.</p>
+
+  <footer>
+    <span>Free &amp; open-source · <a href="https://github.com/divyamohan1993/vaani/blob/main/LICENSE">MIT</a></span>
+    <span>Built in India 🇮🇳 · <a href="https://github.com/divyamohan1993">divyamohan1993</a></span>
+  </footer>
+</div>
+
+<script>
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const box = document.getElementById('box'), mic = document.getElementById('mic'), cap = document.getElementById('cap');
+  let rec = null, on = false, want = false, lang = 'en-IN', finalTxt = '';
+
+  if (!SR) { document.getElementById('nochrome').hidden = false; }
+  else {
+    rec = new SR(); rec.continuous = true; rec.interimResults = true; rec.lang = lang;
+    rec.onstart = () => { on = true; document.body.dataset.on = '1'; mic.setAttribute('aria-pressed','true'); cap.textContent = 'Listening… speak now.'; };
+    rec.onend = () => { on = false; document.body.dataset.on = '0'; mic.setAttribute('aria-pressed','false'); if (want) { try { rec.start(); } catch {} } else cap.textContent = 'Click the mic and talk.'; };
+    rec.onerror = (e) => { if (e.error === 'not-allowed') cap.textContent = 'Allow the microphone to try the demo.'; };
+    rec.onresult = (e) => {
+      let it = '';
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        const r = e.results[i];
+        if (r.isFinal) finalTxt += r[0].transcript.trim() + ' ';
+        else it += r[0].transcript;
+      }
+      box.innerHTML = '';
+      box.append(document.createTextNode(finalTxt));
+      if (it) { const s = document.createElement('span'); s.className = 'it'; s.textContent = it; box.append(s); }
+    };
+  }
+  mic.addEventListener('click', () => {
+    if (!rec) return;
+    if (want) { want = false; try { rec.stop(); } catch {} }
+    else { want = true; try { rec.start(); } catch {} }
+  });
+  document.querySelectorAll('.lang button').forEach(b => b.addEventListener('click', () => {
+    document.querySelectorAll('.lang button').forEach(x => x.classList.remove('on'));
+    b.classList.add('on'); lang = b.dataset.lang;
+    if (rec) { rec.lang = lang; if (want) { try { rec.stop(); } catch {} } }
+  }));
+  document.getElementById('copy').addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText(finalTxt.trim()); const c = document.getElementById('copy'); c.textContent = 'Copied ✓'; setTimeout(() => c.textContent = 'Copy text', 1500); } catch {}
+  });
+</script>
+</body>
+</html>
