@@ -1,6 +1,6 @@
 # Verify the helper makes the real Chrome window always-on-top + adjusts opacity.
 # Reads the live ex-style flags + layered alpha off Chrome's HWND (cross-process).
-$exe = 'd:\todo\helper\target\debug\vaani.exe'
+$exe = "$PSScriptRoot\..\helper\target\debug\vaani.exe"
 
 Add-Type @"
 using System;using System.Runtime.InteropServices;

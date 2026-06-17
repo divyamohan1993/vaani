@@ -1,7 +1,7 @@
 # Automated core test: serving + /health + /type injection into foreground + /window.
 # Does NOT test speech (needs a real mic/voice — covered separately).
 $ErrorActionPreference = 'Continue'
-$exe = 'd:\todo\helper\target\debug\vaani.exe'
+$exe = "$PSScriptRoot\..\helper\target\debug\vaani.exe"
 $base = 'http://127.0.0.1:17653'
 
 $proc = Start-Process -FilePath $exe -PassThru -WindowStyle Hidden
@@ -44,7 +44,7 @@ $timer.Add_Tick({
 })
 $form.Add_Shown({ $form.Activate(); $tb.Focus() | Out-Null; $timer.Start() })
 $form.ShowDialog() | Out-Null
-Set-Content 'd:\todo\inject-result.txt' -Value $script:res -Encoding utf8
+Set-Content "$env:TEMP\vaani-inject-result.txt" -Value $script:res -Encoding utf8
 Write-Output "INJECT_MATCH=$([bool]($script:res -match 'vaani inject test 123')) LEN=$($script:res.Length)"
 
 # /window smoke (must not error)

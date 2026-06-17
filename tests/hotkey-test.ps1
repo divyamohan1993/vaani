@@ -1,5 +1,5 @@
 # Verify the global hotkey (Ctrl+Alt+Space) reaches the helper and is exposed via /poll.
-$exe = 'd:\todo\helper\target\debug\vaani.exe'
+$exe = "$PSScriptRoot\..\helper\target\debug\vaani.exe"
 $base = 'http://127.0.0.1:17653'
 
 Add-Type @"

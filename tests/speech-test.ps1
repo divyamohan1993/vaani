@@ -2,7 +2,7 @@
 #   TTS wav -> Chrome fake mic -> webkitSpeechRecognition -> Google -> page
 #   -> POST /type. Verifies via the debug log (transcript) AND a foreground textbox.
 $exe = "$env:LOCALAPPDATA\Vaani\vaani.exe"
-$wav = 'd:\todo\speech-test.wav'
+$wav = "$env:TEMP\vaani-speech-test.wav"
 $phrase = 'this is a test of voice typing'
 
 # 1. Synthesize a ~15s wav (phrase repeated) so audio is present whenever recognition starts.
@@ -55,7 +55,7 @@ $timer.Add_Tick({
 $form.Add_Shown({ $form.Activate(); $tb.Focus() | Out-Null; $timer.Start() })
 $form.ShowDialog() | Out-Null
 
-Set-Content 'd:\todo\speech-result.txt' -Value $script:res -Encoding utf8
+Set-Content "$env:TEMP\vaani-speech-result.txt" -Value $script:res -Encoding utf8
 "TEXTBOX_LEN=$($script:res.Length)"
 "---- transcript from helper log (/type) ----"
 Get-Content "$env:LOCALAPPDATA\Vaani\vaani.log" | Select-String 'PAGE: (onstart|error)|/type'
